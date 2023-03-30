@@ -10,23 +10,28 @@ let fileName;
 let expected = 'Test';
 
 async function checkInput(name) {
-  fs.readFile(name + '.txt', 'utf8', async (err, data) => {
+  const inOut = name.split(' ');
+  fs.readFile(inOut[0] + '.txt', 'utf8', async (err, data) => {
     if (!err) {
       input = data;
       console.log(input);
-      output = await processInput(input, expected);
-      console.log(output);
+      console.log(expected);
+      output = await processInput(inOut[1], input, expected);
     }
   });
 }
 
 //NEED TO BE HASHED IF MODE IS SWITCHED
-readline.question('Filename: ', (name) => {
+readline.question('Filenames: ', (name) => {
   checkInput(name);
   readline.close();
 });
-// checkInput('input');
+// checkInput('input output');
 
-async function processInput(input, expected) {
-  return input === expected;
+async function processInput(store, input, expected) {
+  const result = (input === expected).toString();
+  fs.writeFile(store + '.txt', result, (err) => {
+    if (err) console.log(err);
+    console.log(result);
+  });
 }
